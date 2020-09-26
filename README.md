@@ -53,6 +53,12 @@ plt.show()
 ---
 ## Model Atchitecture
 
+In this repo, I implemented 2 models of GANs using different types of layers/architectures.
+
+The first model uses deep fully connected layers.
+
+The second model uses deep deconvolutional layers for the generator, and uses deep convolutional layers for the discriminator.
+
 #### The Generator
 
 The generator consists of 4 fully connected layers:
