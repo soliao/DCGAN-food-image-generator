@@ -84,7 +84,7 @@ I trained the networks for 30,000 epochs. At each epoch a batch of 32 (batch_siz
 
 
 
-# DCGAn
+# DCGAN
 
 **ref** https://gluon.mxnet.io/chapter14_generative-adversarial-networks/dcgan.html
 
