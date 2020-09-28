@@ -31,7 +31,7 @@ The dataset consists of 3 keys: `category`, `category_names`, and `data`
 
 `food_dataset['category']` gives the one-hot coded vector of the category
 
-`food_dataset['category_names']` gives the name of the category of the image (for example, 'ceviche')
+`food_dataset['category_names']` gives a list of name of food (for example, 'ceviche') in the entire dataset
 
 `food_dataset['data']` gives the pixel values of all images. Shape (10099, 64, 64, 3)
 
