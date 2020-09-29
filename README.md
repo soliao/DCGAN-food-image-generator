@@ -2,62 +2,82 @@
 Use GANs to generate food images (with Kaggle's Food-101 dataset)
 
 
-**Original paper**
+**Original papers**
 
-I. J. Goodfellow et al. (2014) **Generative Adversarial Nets** [[arXiv]](https://arxiv.org/abs/1406.2661)
+**GAN**\
+I. J. Goodfellow et al. (2014) **Generative adversarial nets** [[arXiv]](https://arxiv.org/abs/1406.2661)
+
+**DCGAN**\
+A. Radford et al. (2016) **Unsupervised representation learning with deep convolutional generative adversarial networks** [[arXiv](https://arxiv.org/abs/1511.06434)]
+
 
 ---
-## The Dataset
+# The Dataset
 In this repo I used the **Food-101 dataset on Kaggle** [[kaggle dataset]](https://www.kaggle.com/kmader/food41)
 
 Because of my local desktop's memory/computation capacity, I used the subset **food_c101_n10099_r64x64x3.h5**, which consists of 10,999 colored images of size 64x64 pixel^2
 
-To access to the dataset, simply uses the following commands:
+Please go to the Kaggle link above to download the dataset.
+
+I trained my network on **Google Colab**. After starting an notebook and setting the GPU runtime, upload the file **food_c101_n10099_r64x64x3.h5** to the current work directory.
+
+To access to the dataset, simply use the following commands:
 
 ``` python3
-## Load the subdataset
 import h5py
-data_dir = 'archive'
-filename = 'food_c101_n10099_r64x64x3.h5'
 
-food_dataset = h5py.File(os.path.join(data_dir, filename), 'r')
+# dataset filename
+filename = "food_c101_n10099_r64x64x3.h5"
+
+food_dataset = h5py.File(filename, 'r')
+print(food_dataset.keys())
 
 category = np.array(food_dataset['category'])
 category_names = np.array(food_dataset['category_names'])
-data = np.array(food_dataset['images'])
+orig_data = np.array(food_dataset['images'])
+
+# check shape
+orig_data.shape
+
 ```
 
-The dataset consists of 3 keys: `category`, `category_names`, and `data`
+The dataset consists of 3 keys: `images`, `category`, and `category_names` 
 
-`food_dataset['category']` gives the one-hot coded vector of the category
+`food_dataset['images']` gives a (10099, 64, 64, 3) array of the pixel values of all images.\
+`food_dataset['category']` gives the one-hot coded vector of the category\
+`food_dataset['category_names']` gives a list of food names in the entire dataset\
 
-`food_dataset['category_names']` gives a list of name of food (for example, 'ceviche') in the entire dataset
+To visualize the category of *an image* (index = `idx`):
 
-`food_dataset['data']` gives the pixel values of all images. Shape (10099, 64, 64, 3)
+``` python3
+item_name = category_names[category[idx]][0].decode('utf-8')
+```
 
-To visualize an image from the dataset:
+To visualize an image (index = `idx`) and its category:
 
 ``` python3
 import matplotlib.pyplot as plt
 
-idx = 10
+idx = 56 # or pick your own number
+
+item_name = category_names[category[idx]][0].decode('utf-8')
 
 plt.figure()
-plt.imshow(data[idx,:,:,:])
-plt.title(category_names[idx])
+plt.imshow(orig_data[idx])
+plt.title(item_name)
 plt.axis('off')
 plt.show()
 ```
 
-
 ---
-## Model Atchitecture
+# Model Atchitectures
 
 In this repo, I implemented 2 models of GANs using different types of layers/architectures.
 
-The first model uses deep fully connected layers.
+The first model uses deep fully connected layers as a benchmark model.
 
-The second model uses deep deconvolutional layers for the generator, and uses deep convolutional layers for the discriminator.
+The second model (DCGAN) I used deep convolutional layers.
+
 
 ## Model 1 - fully connected layers
 
@@ -94,8 +114,23 @@ I trained the networks for 100,000 epochs. At each epoch a batch of 128 (`batch_
 
 
 
-# Model 2 - DCGAN (convolutional layers)
+# Model 2 - DCGAN (deep convolutional layers)
 
 **ref** https://gluon.mxnet.io/chapter14_generative-adversarial-networks/dcgan.html
+
+### The Generator
+The generator consists of 4 transposed convolutional (Conv2DT) layers:
+
+**Inputs**: an noise vector of dimension (`hidden_dim`) = 100\
+**FC**: 4x4x1024 (16384) units, no activation, the output is reshaped to (4, 4, 1024) (`channels_last`)\
+**Conv2DT-1**: 512 units, filter size = 5, stride = 2, padding = 'same', **ReLU** activation, and batch normalizaion\
+**Conv2DT-2**: 256 units, filter size = 5, stride = 2, padding = 'same', **ReLU** activation, and batch normalizaion\
+**Conv2DT-3**: 128 units, filter size = 5, stride = 2, padding = 'same', **ReLU** activation, and batch normalizaion\
+**Conv2DT-4**: 3 units, filter size = 5, stride = 2, padding = 'same', **tanh** activation, and batch normalizaion\
+
+**Optimizer**: Adam with learning rate = 2e-4, beta_1 = 0.5
+
+
+
 
 
