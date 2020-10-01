@@ -2,6 +2,9 @@
 Use GANs to generate food images (with Kaggle's Food-101 dataset)
 
 
+## (10/01/2020) This project is still in progress... 
+
+
 **Original papers**
 
 **GAN**\
