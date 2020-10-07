@@ -126,14 +126,25 @@ The generator consists of 4 transposed convolutional (Conv2DT) layers:
 
 **Inputs**: an noise vector of dimension (`hidden_dim`) = 100\
 **FC**: 4x4x1024 (16384) units, no activation, the output is reshaped to (4, 4, 1024) (`channels_last`)\
-**Conv2DT-1**: 512 units, filter size = 5, stride = 2, padding = 'same', **ReLU** activation, and batch normalizaion\
-**Conv2DT-2**: 256 units, filter size = 5, stride = 2, padding = 'same', **ReLU** activation, and batch normalizaion\
-**Conv2DT-3**: 128 units, filter size = 5, stride = 2, padding = 'same', **ReLU** activation, and batch normalizaion\
+**Conv2DT-1**: 512 units, filter size = 5, stride = 2, padding = 'same', **LeakyReLU** activation, and batch normalizaion\
+**Conv2DT-2**: 256 units, filter size = 5, stride = 2, padding = 'same', **LeakyReLU** activation, and batch normalizaion\
+**Conv2DT-3**: 128 units, filter size = 5, stride = 2, padding = 'same', **LeakyReLU** activation, and batch normalizaion\
 **Conv2DT-4**: 3 units, filter size = 5, stride = 2, padding = 'same', **tanh** activation, and batch normalizaion\
 
 **Optimizer**: Adam with learning rate = 2e-4, beta_1 = 0.5
 
+### The Discriminator
+The generator consists of 4 convolutional (Conv2D) and 1 dense layers:
 
+**Inputs**: an image of shape (64, 64, 3)\
+**Conv2D-1**: 128 units, filter size = 5, stride = 2, padding = 'same', **LeakyReLU** activation, and batch normalizaion\
+**Conv2D-2**: 256 units, filter size = 5, stride = 2, padding = 'same', **LeakyReLU** activation, and batch normalizaion\
+**Conv2D-3**: 512 units, filter size = 5, stride = 2, padding = 'same', **LeakyReLU** activation, and batch normalizaion\
+**Conv2D-4**: 1024 units, filter size = 5, stride = 2, padding = 'same', **LeakyReLU** activation, and batch normalizaion\
+**Flatten**: flatten to a 1-D vector (1024 units)
+**FC**: 1 unit, sigmoid activation to determine true (1) or fake (0)\
+
+**Optimizer**: Adam with learning rate = 2e-4, beta_1 = 0.5
 
 
 
